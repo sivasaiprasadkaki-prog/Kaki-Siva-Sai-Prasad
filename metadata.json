@@ -1,0 +1,5 @@
+{
+  "name": "TripTracker",
+  "description": "A modern and intuitive application to track trip expenses, manage ledgers, and export reports to PDF and Excel. Features include cash flow tracking, file attachments, and a sleek, animated user interface.",
+  "requestFramePermissions": []
+}

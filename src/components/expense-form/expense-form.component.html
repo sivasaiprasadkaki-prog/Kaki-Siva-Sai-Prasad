@@ -1,0 +1,98 @@
+<div class="fixed inset-0 bg-black/70 backdrop-blur-sm z-30 flex items-center justify-center animate-fadeIn" (click)="close.emit()">
+  <div class="bg-white dark:bg-gray-800 rounded-lg shadow-2xl w-full max-w-lg animate-scaleIn" (click)="$event.stopPropagation()">
+    <form [formGroup]="expenseForm" (ngSubmit)="onSubmit()" class="flex flex-col h-full max-h-[90vh]">
+      <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+        <h3 class="text-xl font-semibold leading-6" [class]="mode() === 'cash-in' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'">
+          {{ isEditMode ? 'Edit' : 'Add' }} {{ mode() === 'cash-in' ? 'Cash In' : 'Cash Out' }}
+        </h3>
+      </div>
+      
+      <div class="p-6 space-y-4 overflow-y-auto">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Date & Time</label>
+            <input type="datetime-local" formControlName="date" class="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Amount</label>
+            <input type="number" step="0.01" formControlName="amount" class="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+        </div>
+        <div>
+          <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Details</label>
+          <input type="text" formControlName="details" class="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Category</label>
+            <select formControlName="category" class="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option>Food</option>
+              <option>Rent</option>
+              <option>Utilities</option>
+              <option>Transport</option>
+              <option>Health Care</option>
+              <option>Custom</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Mode of Payment</label>
+            <select formControlName="mode" class="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+              <option>Cash</option>
+              <option>Credit Card</option>
+              <option>Debit Card</option>
+              <option>Online</option>
+            </select>
+          </div>
+        </div>
+        @if (isCustomCategory()) {
+          <div class="animate-fadeIn">
+            <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Custom Category Name</label>
+            <input type="text" formControlName="customCategory" class="mt-1 block w-full bg-gray-50 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm py-2 px-3 text-gray-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+          </div>
+        }
+        <div>
+          <label class="block text-sm font-medium text-gray-600 dark:text-gray-300">Bill / Attachments (Up to 5 files)</label>
+          <div class="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 dark:border-gray-600 border-dashed rounded-md">
+            <div class="space-y-1 text-center">
+              <svg class="mx-auto h-12 w-12 text-gray-400 dark:text-gray-500" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true"><path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" /></svg>
+              <div class="flex text-sm text-gray-500 dark:text-gray-400">
+                <label for="file-upload" class="relative cursor-pointer bg-white dark:bg-gray-800 rounded-md font-medium text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-offset-gray-100 dark:focus-within:ring-offset-gray-900 focus-within:ring-indigo-500">
+                  <span>Upload files</span>
+                  <input id="file-upload" type="file" multiple (change)="onFileChange($event)" class="sr-only">
+                </label>
+                <p class="pl-1">or drag and drop</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        @if (attachedFiles().length > 0) {
+          <div class="mt-4">
+            <h4 class="text-sm font-medium text-gray-600 dark:text-gray-300">File Previews:</h4>
+            <div class="mt-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
+              @for(file of attachedFiles(); track file) {
+                <div class="relative group">
+                  <img [src]="file.dataUrl" [alt]="file.name" class="h-24 w-full object-cover rounded-md">
+                  <div class="absolute inset-0 bg-black/60 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                    <button type="button" (click)="removeAttachment(file)" class="p-1.5 bg-red-600 rounded-full text-white shadow-lg hover:bg-red-500">
+                      <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zM7 8a1 1 0 012 0v6a1 1 0 11-2 0V8zm4 0a1 1 0 012 0v6a1 1 0 11-2 0V8z" clip-rule="evenodd" /></svg>
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      @if (errorMessage()) {
+        <div class="px-6 pb-2 text-sm text-red-500 dark:text-red-400">{{ errorMessage() }}</div>
+      }
+
+      <div class="p-6 mt-auto border-t border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 flex justify-end space-x-3">
+        <button type="button" (click)="close.emit()" class="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors">Cancel</button>
+        <button type="submit" [class]="'px-4 py-2 text-sm font-medium text-white rounded-md transition-colors ' + (mode() === 'cash-in' ? 'bg-green-600 hover:bg-green-700' : 'bg-red-600 hover:bg-red-700')">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
